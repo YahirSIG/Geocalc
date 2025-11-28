@@ -8,6 +8,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-light">
@@ -43,14 +46,18 @@
   </div>
 </div>
 
-<div class="header-app text-center">
+<div class="header-app position-relative text-center">
     <h3><i class="fa-solid fa-draw-polygon"></i> GeoCalc Pro</h3>
     <small>Ingeniería Geomática</small>
+    
+    <button id="startTourBtn" class="btn btn-sm btn-outline-light position-absolute top-0 end-0 m-3" title="Ver Tutorial">
+        <i class="fa-solid fa-circle-info"></i> Tour
+    </button>
 </div>
 
 <div class="container mb-5">
     
-    <div class="card border-0 shadow-sm mb-3">
+    <div class="card border-0 shadow-sm mb-3" id="tourStepMode">
         <div class="card-body p-2">
             <div class="btn-group w-100" role="group">
                 <input type="radio" class="btn-check" name="inputMode" id="modeGeo" autocomplete="off" checked>
@@ -122,7 +129,7 @@
             </div>
 
             <hr class="text-muted my-3">
-            <div class="row g-2 align-items-center">
+            <div class="row g-2 align-items-center" id="tourStepImport">
                 <div class="col-10">
                     <div class="d-grid">
                         <input type="file" id="fileUpload" accept=".csv, .txt" class="d-none">
@@ -161,7 +168,7 @@
         </div>
     </div>
 
-    <div class="card shadow-sm">
+    <div class="card shadow-sm" id="tourStepMap">
         <div class="card-header bg-white d-flex justify-content-between align-items-center">
             <strong>Puntos: <span id="pointCount">0</span></strong>
             <button class="btn btn-sm btn-outline-danger" id="btnClearAll">Borrar Todo</button>
@@ -188,7 +195,7 @@
             </div>
         </div>
         
-        <div class="card-footer bg-white">
+        <div class="card-footer bg-white" id="tourStepExport">
             <label class="small text-muted mb-2">Exportar Polígono:</label>
             <div class="row g-2">
                 <div class="col-6">
@@ -211,6 +218,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.js"></script>
 <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+
 <script src="script.js"></script>
 
 </body>

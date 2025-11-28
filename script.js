@@ -11,21 +11,92 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- ARRANQUE ---
     initMap();
     setupEventListeners();
+    initTutorial(); // Inicializar configuración del tutorial
+
+    // --- 0. CONFIGURACIÓN DEL TUTORIAL (DRIVER.JS) ---
+    function initTutorial() {
+        const driver = window.driver.js.driver;
+        
+        const driverObj = driver({
+            showProgress: true,
+            animate: true,
+            // Textos en español
+            nextBtnText: 'Siguiente →',
+            prevBtnText: '← Atrás',
+            doneBtnText: '¡Entendido!',
+            steps: [
+                { 
+                    element: '.header-app', 
+                    popover: { 
+                        title: 'Bienvenido a GeoCalc Pro', 
+                        description: 'Tu navaja suiza para conversiones de coordenadas y levantamientos rápidos.' 
+                    } 
+                },
+                { 
+                    element: '#tourStepMode', 
+                    popover: { 
+                        title: 'Modo de Entrada', 
+                        description: 'Elige si vas a ingresar Lat/Lon (Grados Decimales) o Coordenadas UTM.' 
+                    } 
+                },
+                { 
+                    element: '#btnGps', 
+                    popover: { 
+                        title: 'GPS en Campo', 
+                        description: 'Usa este botón para capturar tu ubicación actual con el GPS del celular.' 
+                    } 
+                },
+                { 
+                    element: '#tourStepMap', 
+                    popover: { 
+                        title: 'Mapa Interactivo', 
+                        description: 'Puedes tocar cualquier parte del mapa para capturar una coordenada. Usa el control de capas arriba a la derecha para ver Satélite o Topografía.' 
+                    } 
+                },
+                { 
+                    element: '#tourStepImport', 
+                    popover: { 
+                        title: 'Carga Masiva', 
+                        description: '¿Tienes un archivo de Excel/Bloc de notas? Súbelo aquí. Aceptamos TXT y CSV.' 
+                    } 
+                },
+                { 
+                    element: '#tourStepExport', 
+                    popover: { 
+                        title: 'Exportación', 
+                        description: 'Al finalizar tu polígono, descárgalo para usarlo en Google Earth (KML) o QGIS (GeoJSON).' 
+                    } 
+                }
+            ]
+        });
+
+        // Botón Manual del Header
+        const btnTour = document.getElementById('startTourBtn');
+        if(btnTour) {
+            btnTour.addEventListener('click', () => driverObj.drive());
+        }
+
+        // Auto-start (Solo la primera vez)
+        if (!localStorage.getItem('geoCalcTourSeen')) {
+            // Pequeño delay para asegurar que cargó todo visualmente
+            setTimeout(() => {
+                driverObj.drive();
+                localStorage.setItem('geoCalcTourSeen', 'true');
+            }, 1000);
+        }
+    }
 
     // --- 1. CONFIGURACIÓN DEL MAPA ---
     function initMap() {
-        // Capas Base
         const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' });
         const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: '© Esri' });
         const topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { maxZoom: 17, attribution: '© OpenTopoMap' });
 
-        // Inicializar Mapa (Scroll desactivado para obligar Ctrl)
         map = L.map('map', { scrollWheelZoom: false, layers: [osm] }).setView([16.75, -93.11], 10);
 
-        // Lógica: Ctrl + Scroll para Zoom
+        // Ctrl + Scroll
         const mapContainer = document.getElementById('map');
         const overlay = document.getElementById('zoomOverlay');
-        
         mapContainer.addEventListener('wheel', (e) => {
             if (e.ctrlKey) {
                 e.preventDefault(); 
@@ -37,18 +108,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, { passive: false });
 
-        // Capas Vectoriales
         polygonLayer = L.polygon([], {color: 'blue', fillColor: '#3388ff', fillOpacity: 0.2}).addTo(map);
         previewMarker = L.marker([0,0], {opacity: 0.6}).addTo(map);
 
-        // Control de Capas
         L.control.layers(
             { "Callejero": osm, "Satélite": sat, "Topográfico": topo },
             { "Polígono": polygonLayer, "Marcador": previewMarker },
             { position: 'topright' }
         ).addTo(map);
 
-        // Widget de Estadísticas
         infoControl = L.control({position: 'bottomleft'});
         infoControl.onAdd = function() { this._div = L.DomUtil.create('div', 'info-stats'); this.update(); return this._div; };
         infoControl.update = function(props) {
@@ -58,7 +126,6 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         infoControl.addTo(map);
 
-        // Clic en Mapa (Digitalización)
         map.on('click', function(e) {
             document.getElementById('modeGeo').checked = true; toggleInputs();
             document.getElementById('latInput').value = e.latlng.lat.toFixed(6);
@@ -78,7 +145,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('btnExportGeoJSON').addEventListener('click', exportGeoJSON);
         document.getElementById('btnExportKML').addEventListener('click', exportKML);
         
-        // Carga Masiva
         const fileInput = document.getElementById('fileUpload');
         if(fileInput) fileInput.addEventListener('change', handleFileUpload);
     }
@@ -90,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('utmInputs').style.display = isGeo ? 'none' : 'block';
     }
 
-    // --- 3. IMPORTACIÓN DE ARCHIVOS (LÓGICA ACTUALIZADA) ---
+    // --- 3. LECTURA DE ARCHIVOS ---
     function handleFileUpload(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -101,16 +167,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const lines = text.split(/\r\n|\n/);
             let addedCount = 0;
 
-            // Obtener Zona y Hemisferio de la Interfaz (IMPORTANTE para la opción B)
             const uiZone = document.getElementById('zoneInput').value;
-            const uiHemiVal = document.getElementById('hemisphereInput').value; // 'N' o 'S'
+            const uiHemiVal = document.getElementById('hemisphereInput').value; 
             const uiHemi = (uiHemiVal === 'N') ? 'north' : 'south';
 
             lines.forEach(line => {
                 line = line.trim();
                 if (!line) return;
 
-                // Separar por coma, punto y coma o espacios
                 let parts;
                 if (line.includes(',')) parts = line.split(',');
                 else if (line.includes(';')) parts = line.split(';');
@@ -118,7 +182,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 parts = parts.map(p => p.trim());
 
-                // OPCIÓN A: LAT, LON (2 Columnas)
                 if (parts.length === 2) {
                     const lat = parseFloat(parts[0]);
                     const lon = parseFloat(parts[1]);
@@ -127,7 +190,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         addedCount++;
                     }
                 } 
-                // OPCIÓN B: VÉRTICE, ESTE, NORTE (3 Columnas)
                 else if (parts.length === 3) {
                     const label = parts[0]; 
                     const east = parseFloat(parts[1]);
@@ -135,15 +197,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     if (!isNaN(east) && !isNaN(north)) {
                         try {
-                            // Construir proyección con datos de la UI
                             const projStr = `+proj=utm +zone=${uiZone} +${uiHemi} +datum=WGS84 +units=m +no_defs`;
-                            const geo = proj4(projStr, 'EPSG:4326', [east, north]); // [lon, lat]
-                            
+                            const geo = proj4(projStr, 'EPSG:4326', [east, north]);
                             if (isValidGeo(geo[1], geo[0])) {
                                 pushPoint(geo[1], geo[0], `Imp. ${label}`);
                                 addedCount++;
                             }
-                        } catch(err) { console.error("Error proyección", line); }
+                        } catch(err) { console.error(err); }
                     }
                 }
             });
@@ -153,16 +213,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('pointCount').innerText = pointsList.length;
                 updatePolygonStats();
                 map.fitBounds(polygonLayer.getBounds(), {padding: [20, 20]});
-                alert(`Importación completada: ${addedCount} puntos.\nSe usó Zona ${uiZone}${uiHemiVal} para datos UTM.`);
+                alert(`Importación completada: ${addedCount} puntos.`);
             } else {
-                alert("No se encontraron coordenadas válidas.\nRevisa la ayuda (?)");
+                alert("No se encontraron coordenadas válidas.");
             }
-            event.target.value = ''; // Resetear input
+            event.target.value = ''; 
         };
         reader.readAsText(file);
     }
 
-    // --- 4. FUNCIONES AUXILIARES ---
     function isValidGeo(lat, lon) {
         return !isNaN(lat) && !isNaN(lon) && lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180;
     }
@@ -175,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
         tbody.appendChild(row);
     }
 
-    // --- 5. CALCULADORA MANUAL ---
+    // --- 4. CÁLCULO ---
     function calculatePreview() {
         const isGeo = document.getElementById('modeGeo').checked;
         let lat, lon, utmE, utmN, zone, hemi;
@@ -223,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('resUTM').innerText = "---";
     }
 
-    // --- 6. GESTIÓN DE LISTA ---
+    // --- 5. GESTIÓN LISTA ---
     function addPointToList() {
         if (!currentCalc) return;
         pushPoint(currentCalc.lat, currentCalc.lon, "Manual");
