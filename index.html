@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GeoCalc Pro</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-light">
+
+<div class="modal fade" id="formatHelpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fa-solid fa-file-csv"></i> Formatos de Archivo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body small">
+        <p>Sube archivos <strong>.txt</strong> o <strong>.csv</strong>. El sistema detecta el formato según las columnas:</p>
+        
+        <h6 class="text-primary fw-bold">A) Geográficas (2 columnas)</h6>
+        <p>Latitud, Longitud (en decimales).</p>
+        <div class="alert alert-light border font-monospace p-2 bg-light">
+            16.7532, -93.1145<br>
+            16.7540, -93.1150
+        </div>
+
+        <h6 class="text-primary fw-bold">B) UTM (3 columnas)</h6>
+        <p>Vértice, Este (X), Norte (Y).</p>
+        <div class="alert alert-warning border font-monospace p-2">
+            P-1, 487500.23, 1852000.45<br>
+            P-2, 487600.10, 1852100.12
+        </div>
+        <p class="text-danger mb-0" style="font-size: 0.85rem;">
+            <strong>¡Ojo!</strong> Para UTM, el sistema usará la <u>Zona</u> y <u>Hemisferio</u> que tengas seleccionados en la pantalla principal.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="header-app text-center">
+    <h3><i class="fa-solid fa-draw-polygon"></i> GeoCalc Pro</h3>
+    <small>Ingeniería Geomática</small>
+</div>
+
+<div class="container mb-5">
+    
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-body p-2">
+            <div class="btn-group w-100" role="group">
+                <input type="radio" class="btn-check" name="inputMode" id="modeGeo" autocomplete="off" checked>
+                <label class="btn btn-outline-primary" for="modeGeo">Lat/Lon</label>
+                <input type="radio" class="btn-check" name="inputMode" id="modeUtm" autocomplete="off">
+                <label class="btn btn-outline-primary" for="modeUtm">UTM</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-body">
+            
+            <div id="gpsSection" class="mb-3 d-grid">
+                <button class="btn btn-outline-secondary btn-sm" id="btnGps">
+                    <i class="fa-solid fa-location-crosshairs"></i> Usar mi ubicación GPS
+                </button>
+            </div>
+
+            <div id="geoInputs">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <label class="small text-muted">Latitud (Y)</label>
+                        <input type="number" id="latInput" class="form-control" inputmode="decimal" step="any" placeholder="16.75...">
+                    </div>
+                    <div class="col-6">
+                        <label class="small text-muted">Longitud (X)</label>
+                        <input type="number" id="lonInput" class="form-control" inputmode="decimal" step="any" placeholder="-93.11...">
+                    </div>
+                </div>
+                <div class="form-text text-muted small mt-1">
+                    <i class="fa-solid fa-hand-pointer"></i> Toca el mapa para capturar.
+                </div>
+            </div>
+
+            <div id="utmInputs" style="display:none;">
+                <div class="row g-2 mb-2">
+                    <div class="col-6">
+                        <label class="small text-muted">Zona</label>
+                        <input type="number" id="zoneInput" class="form-control" value="15" inputmode="numeric">
+                    </div>
+                    <div class="col-6">
+                        <label class="small text-muted">Hemisferio</label>
+                        <select id="hemisphereInput" class="form-select">
+                            <option value="N">Norte</option>
+                            <option value="S">Sur</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <label class="small text-muted">Este (X)</label>
+                        <input type="number" id="eastInput" class="form-control" inputmode="decimal" placeholder="Ej: 487000">
+                    </div>
+                    <div class="col-6">
+                        <label class="small text-muted">Norte (Y)</label>
+                        <input type="number" id="northInput" class="form-control" inputmode="decimal" placeholder="Ej: 1852000">
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 mt-3">
+                <button class="btn btn-primary" id="btnCalculate">
+                    <i class="fa-solid fa-calculator"></i> Validar / Calcular
+                </button>
+                <button class="btn btn-secondary" id="btnAddPoint" disabled>
+                    <i class="fa-solid fa-plus-circle"></i> Agregar Punto
+                </button>
+            </div>
+
+            <hr class="text-muted my-3">
+            <div class="row g-2 align-items-center">
+                <div class="col-10">
+                    <div class="d-grid">
+                        <input type="file" id="fileUpload" accept=".csv, .txt" class="d-none">
+                        <button class="btn btn-outline-dark btn-sm" onclick="document.getElementById('fileUpload').click()">
+                            <i class="fa-solid fa-file-import"></i> Importar Puntos (TXT/CSV)
+                        </button>
+                    </div>
+                </div>
+                <div class="col-2 text-end">
+                    <button class="btn btn-link text-muted p-0" data-bs-toggle="modal" data-bs-target="#formatHelpModal">
+                        <i class="fa-solid fa-circle-question fa-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card result-card mb-3">
+        <div class="card-body p-2">
+            <h6 class="card-title text-success border-bottom pb-2">
+                <i class="fa-solid fa-check-circle"></i> Dato Validado
+            </h6>
+            <div class="row mb-1">
+                <div class="col-4 fw-bold text-muted small">Decimales:</div>
+                <div class="col-8 font-monospace small" id="resDD">---</div>
+            </div>
+            <div class="row mb-1">
+                <div class="col-4 fw-bold text-muted small">DMS:</div>
+                <div class="col-8 font-monospace small" id="resDMS">---</div>
+            </div>
+            <div class="row">
+                <div class="col-4 fw-bold text-muted small">UTM:</div>
+                <div class="col-8 font-monospace small" id="resUTM">---</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <strong>Puntos: <span id="pointCount">0</span></strong>
+            <button class="btn btn-sm btn-outline-danger" id="btnClearAll">Borrar Todo</button>
+        </div>
+        
+        <div class="card-body p-0 position-relative">
+            <div id="map"></div>
+            
+            <div id="zoomOverlay" class="zoom-msg-overlay">
+                <p>Usa <kbd>Ctrl</kbd> + Scroll para hacer zoom</p>
+            </div>
+
+            <div class="table-responsive" style="max-height: 150px; overflow-y: auto;">
+                <table class="table table-sm table-striped mb-0 small">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Coordenada</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pointsTableBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="card-footer bg-white">
+            <label class="small text-muted mb-2">Exportar Polígono:</label>
+            <div class="row g-2">
+                <div class="col-6">
+                    <button class="btn btn-outline-dark w-100 btn-sm" id="btnExportGeoJSON">
+                        <i class="fa-solid fa-code"></i> GeoJSON
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button class="btn btn-outline-primary w-100 btn-sm" id="btnExportKML">
+                        <i class="fa-solid fa-earth-americas"></i> KML
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.js"></script>
+<script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
