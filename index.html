@@ -8,9 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
-
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-light">
@@ -19,28 +17,52 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title"><i class="fa-solid fa-file-csv"></i> Formatos de Archivo</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title"><i class="fa-solid fa-file-import"></i> Formatos de Importación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body small">
-        <p>Sube archivos <strong>.txt</strong> o <strong>.csv</strong>. El sistema detecta el formato según las columnas:</p>
+        <p>Sube archivos <strong>.txt</strong> o <strong>.csv</strong>:</p>
+        <h6 class="text-primary fw-bold">A) Geográficas (2 cols)</h6>
+        <div class="alert alert-light border font-monospace p-2">16.7532, -93.1145</div>
+        <h6 class="text-primary fw-bold">B) UTM (3 cols)</h6>
+        <div class="alert alert-warning border font-monospace p-2">P-1, 487500.23, 1852000.45</div>
+        <p class="text-danger mb-0" style="font-size: 0.85rem;">Para UTM, el sistema usará la Zona y Hemisferio seleccionados en pantalla.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="qgisHelpModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title"><i class="fa-solid fa-earth-americas"></i> Abrir en QGIS / ArcGIS</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>No necesitas convertir a Shapefile (.shp). El formato <strong>GeoJSON</strong> es el estándar moderno y es 100% compatible.</p>
         
-        <h6 class="text-primary fw-bold">A) Geográficas (2 columnas)</h6>
-        <p>Latitud, Longitud (en decimales).</p>
-        <div class="alert alert-light border font-monospace p-2 bg-light">
-            16.7532, -93.1145<br>
-            16.7540, -93.1150
+        <div class="d-flex align-items-start mb-3">
+            <div class="me-2"><i class="fa-solid fa-1 fa-2x text-muted"></i></div>
+            <div>Descarga el archivo <strong>GeoJSON</strong> usando el botón negro.</div>
         </div>
 
-        <h6 class="text-primary fw-bold">B) UTM (3 columnas)</h6>
-        <p>Vértice, Este (X), Norte (Y).</p>
-        <div class="alert alert-warning border font-monospace p-2">
-            P-1, 487500.23, 1852000.45<br>
-            P-2, 487600.10, 1852100.12
+        <div class="d-flex align-items-start mb-3">
+            <div class="me-2"><i class="fa-solid fa-2 fa-2x text-muted"></i></div>
+            <div>Abre <strong>QGIS</strong> en tu computadora.</div>
         </div>
-        <p class="text-danger mb-0" style="font-size: 0.85rem;">
-            <strong>¡Ojo!</strong> Para UTM, el sistema usará la <u>Zona</u> y <u>Hemisferio</u> que tengas seleccionados en la pantalla principal.
-        </p>
+
+        <div class="d-flex align-items-start">
+            <div class="me-2"><i class="fa-solid fa-3 fa-2x text-muted"></i></div>
+            <div><strong>¡Arrastra y suelta!</strong> Toma el archivo descargado y suéltalo dentro del mapa de QGIS.</div>
+        </div>
+        
+        <div class="alert alert-secondary mt-3 small">
+            <i class="fa-solid fa-info-circle"></i> También funciona en <strong>ArcGIS Pro</strong> y <strong>Google Earth</strong> (usando KML).
+        </div>
+      </div>
+      <div class="modal-footer p-1">
+        <button type="button" class="btn btn-sm btn-secondary w-100" data-bs-dismiss="modal">Entendido</button>
       </div>
     </div>
   </div>
@@ -49,9 +71,8 @@
 <div class="header-app position-relative text-center">
     <h3><i class="fa-solid fa-draw-polygon"></i> GeoCalc Pro</h3>
     <small>Ingeniería Geomática</small>
-    
-    <button id="startTourBtn" class="btn btn-sm btn-outline-light position-absolute top-0 end-0 m-3" title="Ver Tutorial">
-        <i class="fa-solid fa-circle-info"></i> Tour
+    <button id="startTourBtn" class="btn btn-sm btn-outline-light position-absolute top-0 end-0 m-3" title="Tutorial">
+        <i class="fa-solid fa-circle-info"></i>
     </button>
 </div>
 
@@ -70,7 +91,6 @@
 
     <div class="card border-0 shadow-sm mb-3">
         <div class="card-body">
-            
             <div id="gpsSection" class="mb-3 d-grid">
                 <button class="btn btn-outline-secondary btn-sm" id="btnGps">
                     <i class="fa-solid fa-location-crosshairs"></i> Usar mi ubicación GPS
@@ -80,16 +100,13 @@
             <div id="geoInputs">
                 <div class="row g-2">
                     <div class="col-6">
-                        <label class="small text-muted">Latitud (Y)</label>
+                        <label class="small text-muted">Latitud</label>
                         <input type="number" id="latInput" class="form-control" inputmode="decimal" step="any" placeholder="16.75...">
                     </div>
                     <div class="col-6">
-                        <label class="small text-muted">Longitud (X)</label>
+                        <label class="small text-muted">Longitud</label>
                         <input type="number" id="lonInput" class="form-control" inputmode="decimal" step="any" placeholder="-93.11...">
                     </div>
-                </div>
-                <div class="form-text text-muted small mt-1">
-                    <i class="fa-solid fa-hand-pointer"></i> Toca el mapa para capturar.
                 </div>
             </div>
 
@@ -109,23 +126,19 @@
                 </div>
                 <div class="row g-2">
                     <div class="col-6">
-                        <label class="small text-muted">Este (X)</label>
-                        <input type="number" id="eastInput" class="form-control" inputmode="decimal" placeholder="Ej: 487000">
+                        <label class="small text-muted">Este</label>
+                        <input type="number" id="eastInput" class="form-control" inputmode="decimal">
                     </div>
                     <div class="col-6">
-                        <label class="small text-muted">Norte (Y)</label>
-                        <input type="number" id="northInput" class="form-control" inputmode="decimal" placeholder="Ej: 1852000">
+                        <label class="small text-muted">Norte</label>
+                        <input type="number" id="northInput" class="form-control" inputmode="decimal">
                     </div>
                 </div>
             </div>
 
             <div class="d-grid gap-2 mt-3">
-                <button class="btn btn-primary" id="btnCalculate">
-                    <i class="fa-solid fa-calculator"></i> Validar / Calcular
-                </button>
-                <button class="btn btn-secondary" id="btnAddPoint" disabled>
-                    <i class="fa-solid fa-plus-circle"></i> Agregar Punto
-                </button>
+                <button class="btn btn-primary" id="btnCalculate"><i class="fa-solid fa-calculator"></i> Validar</button>
+                <button class="btn btn-secondary" id="btnAddPoint" disabled><i class="fa-solid fa-plus-circle"></i> Agregar</button>
             </div>
 
             <hr class="text-muted my-3">
@@ -134,7 +147,7 @@
                     <div class="d-grid">
                         <input type="file" id="fileUpload" accept=".csv, .txt" class="d-none">
                         <button class="btn btn-outline-dark btn-sm" onclick="document.getElementById('fileUpload').click()">
-                            <i class="fa-solid fa-file-import"></i> Importar Puntos (TXT/CSV)
+                            <i class="fa-solid fa-file-import"></i> Importar (TXT/CSV)
                         </button>
                     </div>
                 </div>
@@ -144,84 +157,75 @@
                     </button>
                 </div>
             </div>
-
         </div>
     </div>
 
     <div class="card result-card mb-3">
         <div class="card-body p-2">
-            <h6 class="card-title text-success border-bottom pb-2">
-                <i class="fa-solid fa-check-circle"></i> Dato Validado
-            </h6>
-            <div class="row mb-1">
-                <div class="col-4 fw-bold text-muted small">Decimales:</div>
-                <div class="col-8 font-monospace small" id="resDD">---</div>
-            </div>
-            <div class="row mb-1">
-                <div class="col-4 fw-bold text-muted small">DMS:</div>
-                <div class="col-8 font-monospace small" id="resDMS">---</div>
-            </div>
-            <div class="row">
-                <div class="col-4 fw-bold text-muted small">UTM:</div>
-                <div class="col-8 font-monospace small" id="resUTM">---</div>
-            </div>
+            <h6 class="card-title text-success border-bottom pb-2"><i class="fa-solid fa-check-circle"></i> Validado</h6>
+            <div class="row mb-1"><div class="col-4 fw-bold small text-muted">Dec:</div><div class="col-8 font-monospace small" id="resDD">---</div></div>
+            <div class="row mb-1"><div class="col-4 fw-bold small text-muted">DMS:</div><div class="col-8 font-monospace small" id="resDMS">---</div></div>
+            <div class="row"><div class="col-4 fw-bold small text-muted">UTM:</div><div class="col-8 font-monospace small" id="resUTM">---</div></div>
         </div>
     </div>
 
     <div class="card shadow-sm" id="tourStepMap">
         <div class="card-header bg-white d-flex justify-content-between align-items-center">
             <strong>Puntos: <span id="pointCount">0</span></strong>
-            <button class="btn btn-sm btn-outline-danger" id="btnClearAll">Borrar Todo</button>
+            <button class="btn btn-sm btn-outline-danger" id="btnClearAll">Borrar</button>
         </div>
-        
         <div class="card-body p-0 position-relative">
             <div id="map"></div>
-            
-            <div id="zoomOverlay" class="zoom-msg-overlay">
-                <p>Usa <kbd>Ctrl</kbd> + Scroll para hacer zoom</p>
-            </div>
-
+            <div id="zoomOverlay" class="zoom-msg-overlay"><p>Usa <kbd>Ctrl</kbd> + Scroll para zoom</p></div>
             <div class="table-responsive" style="max-height: 150px; overflow-y: auto;">
                 <table class="table table-sm table-striped mb-0 small">
-                    <thead class="table-light">
-                        <tr>
-                            <th>#</th>
-                            <th>Coordenada</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pointsTableBody">
-                        </tbody>
+                    <thead class="table-light"><tr><th>#</th><th>Coordenada</th></tr></thead>
+                    <tbody id="pointsTableBody"></tbody>
                 </table>
             </div>
         </div>
         
         <div class="card-footer bg-white" id="tourStepExport">
-            <label class="small text-muted mb-2">Exportar Polígono:</label>
+            
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <label class="small text-muted mb-0">Exportar Polígono:</label>
+                <button class="btn btn-link btn-sm p-0 text-success text-decoration-none" style="font-size: 0.8rem;" data-bs-toggle="modal" data-bs-target="#qgisHelpModal">
+                    <i class="fa-solid fa-circle-question"></i> ¿Cómo abrir en QGIS?
+                </button>
+            </div>
+
             <div class="row g-2">
-                <div class="col-6">
-                    <button class="btn btn-outline-dark w-100 btn-sm" id="btnExportGeoJSON">
-                        <i class="fa-solid fa-code"></i> GeoJSON
+                <div class="col-3">
+                    <button class="btn btn-outline-dark w-100 btn-sm" id="btnExportGeoJSON" title="Formato Web/GIS Universal">
+                        <i class="fa-solid fa-code"></i> JSON
                     </button>
                 </div>
-                <div class="col-6">
-                    <button class="btn btn-outline-primary w-100 btn-sm" id="btnExportKML">
+                <div class="col-3">
+                    <button class="btn btn-outline-primary w-100 btn-sm" id="btnExportKML" title="Google Earth">
                         <i class="fa-solid fa-earth-americas"></i> KML
+                    </button>
+                </div>
+                <div class="col-3">
+                    <button class="btn btn-outline-success w-100 btn-sm" id="btnExportCSV" title="Excel con Cálculos">
+                        <i class="fa-solid fa-file-csv"></i> CSV
+                    </button>
+                </div>
+                <div class="col-3">
+                    <button class="btn btn-outline-secondary w-100 btn-sm" id="btnExportTXT" title="Bloc de Notas">
+                        <i class="fa-solid fa-file-lines"></i> TXT
                     </button>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.js"></script>
 <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
 
 <script src="script.js"></script>
-
 </body>
 </html>
