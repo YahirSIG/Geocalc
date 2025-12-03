@@ -67,11 +67,20 @@ kbd { background-color: #eee; border-radius: 3px; border: 1px solid #b4b4b4; pad
 #map:-webkit-full-screen { height: 100% !important; width: 100% !important; z-index: 99999; }
 .leaflet-top, .leaflet-bottom { z-index: 1000 !important; }
 
-/* --- 4. SOLUCIÓN RESPONSIVA SEGURA --- */
+/* --- 4. SOLUCIÓN RESPONSIVA FINAL --- */
 
-/* Regla: El select debe respetar el ancho máximo, pero sin trucos raros */
+/* Estilo para las etiquetas personalizadas encima de los inputs */
+.form-label-custom {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 0.2rem;
+    display: block;
+}
+
+/* El select siempre ocupa el 100% disponible de su contenedor padre */
 .form-select {
-    max-width: 100%;
+    width: 100% !important;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -90,11 +99,8 @@ kbd { background-color: #eee; border-radius: 3px; border: 1px solid #b4b4b4; pad
         overflow-x: hidden; 
     }
 
-    /* Fuentes optimizadas */
-    .form-select-sm, .form-control-sm, .form-label, .input-group-text { font-size: 0.85rem !important; }
-    
-    /* GMS: Ajuste fino para input groups pequeños */
-    .input-group-sm .input-group-text { padding-left: 0.3rem; padding-right: 0.3rem; }
+    /* Reducir ligeramente fuentes */
+    .form-select-sm, .form-control-sm { font-size: 0.85rem !important; }
     
     .table-xs { font-size: 0.7rem !important; }
     .table-xs th, .table-xs td { padding: 4px !important; }

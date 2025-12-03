@@ -116,13 +116,18 @@ document.addEventListener('DOMContentLoaded', function() {
             // Llenar Dropdowns
             document.querySelectorAll('.col-select').forEach(dd => {
                 dd.innerHTML = '';
+                // Opción por defecto (Seleccionar)
+                // let defaultOpt = document.createElement('option'); defaultOpt.text = "Seleccionar..."; dd.appendChild(defaultOpt);
                 for(let i=0; i<maxCols; i++) {
                     let opt = document.createElement('option'); opt.value = i; opt.text = `Col ${i+1}`; dd.appendChild(opt);
                 }
             });
 
             // Sugerencias por defecto
-            if(maxCols >= 2) { if(document.getElementById('mapDecLat')) document.getElementById('mapDecLat').value = 0; if(document.getElementById('mapDecLon')) document.getElementById('mapDecLon').value = 1; }
+            if(maxCols >= 2) { 
+                if(document.getElementById('mapDecLat')) document.getElementById('mapDecLat').value = 0; 
+                if(document.getElementById('mapDecLon')) document.getElementById('mapDecLon').value = 1; 
+            }
 
             new bootstrap.Modal(document.getElementById('importConfigModal')).show();
         };

@@ -34,55 +34,79 @@
         </div>
 
         <div class="card bg-light border-0 mb-3 shadow-sm">
-            <div class="card-body p-2">
+            <div class="card-body p-3">
                 <h6 class="card-title small text-muted fw-bold border-bottom pb-2 mb-3">2. ASIGNAR COLUMNAS</h6>
                 
-                <div id="mapDec" class="mapping-section row g-2">
+                <div id="mapDec" class="mapping-section row g-3">
                     <div class="col-12 col-sm-6">
-                        <label class="form-label small text-muted mb-1"><i class="fa-solid fa-arrows-up-down"></i> Latitud (Y)</label>
-                        <select class="form-select form-select-sm" id="mapDecLat"></select>
+                        <label class="form-label-custom"><i class="fa-solid fa-arrows-up-down text-primary"></i> Latitud (Y)</label>
+                        <select class="form-select form-select-sm col-select" id="mapDecLat"></select>
                     </div>
                     <div class="col-12 col-sm-6">
-                        <label class="form-label small text-muted mb-1"><i class="fa-solid fa-arrows-left-right"></i> Longitud (X)</label>
-                        <select class="form-select form-select-sm" id="mapDecLon"></select>
+                        <label class="form-label-custom"><i class="fa-solid fa-arrows-left-right text-primary"></i> Longitud (X)</label>
+                        <select class="form-select form-select-sm col-select" id="mapDecLon"></select>
                     </div>
                 </div>
 
-                <div id="mapUtm" class="mapping-section row g-2" style="display:none;">
+                <div id="mapUtm" class="mapping-section row g-3" style="display:none;">
                     <div class="col-12 col-sm-6">
-                        <label class="form-label small text-muted mb-1">Este (X)</label>
-                        <select class="form-select form-select-sm" id="mapUtmE"></select>
+                        <label class="form-label-custom">Este (X)</label>
+                        <select class="form-select form-select-sm col-select" id="mapUtmE"></select>
                     </div>
                     <div class="col-12 col-sm-6">
-                        <label class="form-label small text-muted mb-1">Norte (Y)</label>
-                        <select class="form-select form-select-sm" id="mapUtmN"></select>
+                        <label class="form-label-custom">Norte (Y)</label>
+                        <select class="form-select form-select-sm col-select" id="mapUtmN"></select>
                     </div>
                     <div class="col-12">
-                        <label class="form-label small text-muted mb-1">Zona</label>
+                        <label class="form-label-custom">Zona</label>
                         <input type="number" class="form-control form-control-sm" id="mapUtmZoneFixed" placeholder="Ej: 15">
                     </div>
                 </div>
 
-                <div id="mapGms" class="mapping-section row g-2" style="display:none;">
+                <div id="mapGms" class="mapping-section row g-3" style="display:none;">
                     <div class="col-12">
-                        <div class="border rounded p-2 bg-white">
-                            <div class="badge bg-secondary w-100 mb-2">LATITUD</div>
-                            <div class="row g-1">
-                                <div class="col-6"><div class="input-group input-group-sm"><span class="input-group-text w-25 justify-content-center">Gr</span><select class="form-select" id="mapGmsLatD"></select></div></div>
-                                <div class="col-6"><div class="input-group input-group-sm"><span class="input-group-text w-25 justify-content-center">Mn</span><select class="form-select" id="mapGmsLatM"></select></div></div>
-                                <div class="col-6"><div class="input-group input-group-sm"><span class="input-group-text w-25 justify-content-center">Sg</span><select class="form-select" id="mapGmsLatS"></select></div></div>
-                                <div class="col-6"><div class="input-group input-group-sm"><span class="input-group-text w-25 justify-content-center">Hm</span><select class="form-select" id="mapGmsLatH"></select></div></div>
+                        <div class="p-2 border rounded bg-white">
+                            <div class="badge bg-secondary mb-2">LATITUD</div>
+                            <div class="row g-2">
+                                <div class="col-6 col-sm-3">
+                                    <label class="small text-muted d-block text-center">Grado</label>
+                                    <select class="form-select form-select-sm col-select" id="mapGmsLatD"></select>
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <label class="small text-muted d-block text-center">Minuto</label>
+                                    <select class="form-select form-select-sm col-select" id="mapGmsLatM"></select>
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <label class="small text-muted d-block text-center">Segundo</label>
+                                    <select class="form-select form-select-sm col-select" id="mapGmsLatS"></select>
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <label class="small text-muted d-block text-center">Hemisferio</label>
+                                    <select class="form-select form-select-sm col-select" id="mapGmsLatH"></select>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-12">
-                        <div class="border rounded p-2 bg-white">
-                            <div class="badge bg-secondary w-100 mb-2">LONGITUD</div>
-                            <div class="row g-1">
-                                <div class="col-6"><div class="input-group input-group-sm"><span class="input-group-text w-25 justify-content-center">Gr</span><select class="form-select" id="mapGmsLonD"></select></div></div>
-                                <div class="col-6"><div class="input-group input-group-sm"><span class="input-group-text w-25 justify-content-center">Mn</span><select class="form-select" id="mapGmsLonM"></select></div></div>
-                                <div class="col-6"><div class="input-group input-group-sm"><span class="input-group-text w-25 justify-content-center">Sg</span><select class="form-select" id="mapGmsLonS"></select></div></div>
-                                <div class="col-6"><div class="input-group input-group-sm"><span class="input-group-text w-25 justify-content-center">Hm</span><select class="form-select" id="mapGmsLonH"></select></div></div>
+                        <div class="p-2 border rounded bg-white">
+                            <div class="badge bg-secondary mb-2">LONGITUD</div>
+                            <div class="row g-2">
+                                <div class="col-6 col-sm-3">
+                                    <label class="small text-muted d-block text-center">Grado</label>
+                                    <select class="form-select form-select-sm col-select" id="mapGmsLonD"></select>
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <label class="small text-muted d-block text-center">Minuto</label>
+                                    <select class="form-select form-select-sm col-select" id="mapGmsLonM"></select>
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <label class="small text-muted d-block text-center">Segundo</label>
+                                    <select class="form-select form-select-sm col-select" id="mapGmsLonS"></select>
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <label class="small text-muted d-block text-center">Hemisferio</label>
+                                    <select class="form-select form-select-sm col-select" id="mapGmsLonH"></select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -117,7 +141,9 @@
         <h5 class="modal-title">Exportar</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body"><p>Arrastra el archivo <strong>GeoJSON</strong> descargado a QGIS, ArcGIS o Google Earth.</p></div>
+      <div class="modal-body">
+        <p>Arrastra el archivo <strong>GeoJSON</strong> descargado a QGIS, ArcGIS o Google Earth.</p>
+      </div>
     </div>
   </div>
 </div>
@@ -125,10 +151,13 @@
 <div class="header-app position-relative text-center">
     <h3><i class="fa-solid fa-draw-polygon"></i> GeoCalc Pro</h3>
     <small>Ingeniería Geomática</small>
-    <button id="startTourBtn" class="btn btn-sm btn-outline-light position-absolute top-0 end-0 m-3" title="Tutorial"><i class="fa-solid fa-circle-info"></i></button>
+    <button id="startTourBtn" class="btn btn-sm btn-outline-light position-absolute top-0 end-0 m-3" title="Tutorial">
+        <i class="fa-solid fa-circle-info"></i>
+    </button>
 </div>
 
 <div class="container mb-5">
+    
     <div class="card border-0 shadow-sm mb-3" id="tourStepMode">
         <div class="card-body p-2">
             <div class="btn-group w-100" role="group">
@@ -144,8 +173,12 @@
 
     <div class="card border-0 shadow-sm mb-3">
         <div class="card-body">
-            <div id="gpsSection" class="mb-3 d-grid"><button class="btn btn-outline-secondary btn-sm" id="btnGps"><i class="fa-solid fa-location-crosshairs"></i> GPS</button></div>
-            
+            <div id="gpsSection" class="mb-3 d-grid">
+                <button class="btn btn-outline-secondary btn-sm" id="btnGps">
+                    <i class="fa-solid fa-location-crosshairs"></i> GPS
+                </button>
+            </div>
+
             <div id="geoInputs">
                 <div class="row g-2">
                     <div class="col-6"><label class="small text-muted">Latitud</label><input type="number" id="latInput" class="form-control" step="any"></div>
@@ -185,18 +218,25 @@
                 <button class="btn btn-primary" id="btnCalculate"><i class="fa-solid fa-calculator"></i> Validar</button>
                 <button class="btn btn-secondary" id="btnAddPoint" disabled><i class="fa-solid fa-plus-circle"></i> Agregar</button>
             </div>
-            
+
             <hr class="text-muted my-3">
             
             <div class="row g-2 align-items-center" id="tourStepImport">
                 <div class="col-12">
                     <div class="d-flex gap-2 flex-wrap">
                         <input type="file" id="fileUpload" accept=".csv, .txt" class="d-none">
-                        <button class="btn btn-dark btn-sm flex-grow-1" onclick="document.getElementById('fileUpload').click()"><i class="fa-solid fa-file-import"></i> Cargar Archivo</button>
-                        <button class="btn btn-outline-secondary btn-sm flex-grow-1" id="btnDownloadTemplate"><i class="fa-solid fa-download"></i> Plantilla</button>
+                        
+                        <button class="btn btn-dark btn-sm flex-grow-1" onclick="document.getElementById('fileUpload').click()">
+                            <i class="fa-solid fa-file-import"></i> Cargar Archivo
+                        </button>
+                        
+                        <button class="btn btn-outline-secondary btn-sm flex-grow-1" id="btnDownloadTemplate" title="Plantilla Ejemplo">
+                            <i class="fa-solid fa-download"></i> Plantilla
+                        </button>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -219,7 +259,9 @@
             <div id="zoomOverlay" class="zoom-msg-overlay"><p>Usa <kbd>Ctrl</kbd> + Scroll para zoom</p></div>
             <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
                 <table class="table table-sm table-striped mb-0 small table-bordered align-middle">
-                    <thead class="table-light sticky-top"><tr><th>#</th><th>Dec (Lat, Lon)</th><th>GMS</th><th>UTM (Z, E, N)</th></tr></thead>
+                    <thead class="table-light sticky-top">
+                        <tr><th>#</th><th>Dec (Lat, Lon)</th><th>GMS</th><th>UTM (Z, E, N)</th></tr>
+                    </thead>
                     <tbody id="pointsTableBody"></tbody>
                 </table>
             </div>
@@ -227,7 +269,9 @@
         <div class="card-footer bg-white" id="tourStepExport">
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <label class="small text-muted mb-0">Exportar:</label>
-                <button class="btn btn-link btn-sm p-0 text-success text-decoration-none" style="font-size: 0.8rem;" data-bs-toggle="modal" data-bs-target="#qgisHelpModal"><i class="fa-solid fa-circle-question"></i> ¿QGIS?</button>
+                <button class="btn btn-link btn-sm p-0 text-success text-decoration-none" style="font-size: 0.8rem;" data-bs-toggle="modal" data-bs-target="#qgisHelpModal">
+                    <i class="fa-solid fa-circle-question"></i> ¿QGIS?
+                </button>
             </div>
             <div class="row g-2">
                 <div class="col-3"><button class="btn btn-outline-dark w-100 btn-sm" id="btnExportGeoJSON">JSON</button></div>
@@ -244,6 +288,7 @@
 <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+
 <script src="script.js"></script>
 </body>
 </html>
