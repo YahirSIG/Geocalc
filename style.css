@@ -1,27 +1,111 @@
+/* --- 1. CONFIGURACIÓN BASE --- */
+* { box-sizing: border-box; }
+
+html, body {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden !important;
+    margin: 0;
+    padding: 0;
+}
+
 body { padding-bottom: 80px; }
-.header-app { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; padding: 15px; border-radius: 0 0 20px 20px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-#map { height: 350px; width: 100%; border-bottom: 1px solid #ddd; z-index: 1; cursor: crosshair; }
+
+/* --- 2. ESTILOS GENERALES --- */
+.header-app { 
+    background: linear-gradient(135deg, #11998e, #38ef7d); 
+    color: white; 
+    padding: 15px; 
+    border-radius: 0 0 20px 20px; 
+    margin-bottom: 20px; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+}
+
+#map { 
+    height: 350px; 
+    width: 100%; 
+    border-bottom: 1px solid #ddd; 
+    z-index: 1; 
+    cursor: crosshair; 
+}
+
 .result-card { background: #e9ecef; border-left: 5px solid #198754; }
 .font-monospace { font-family: 'Courier New', Courier, monospace; color: #333; }
-.table-responsive { border-top: 1px solid #ddd; }
-.info-stats { padding: 8px 12px; font: 12px/14px Arial, Helvetica, sans-serif; background: rgba(255, 255, 255, 0.95); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px; border-left: 4px solid #11998e; min-width: 160px; }
+
+.info-stats { 
+    padding: 8px 12px; 
+    font: 12px/14px Arial, Helvetica, sans-serif; 
+    background: rgba(255, 255, 255, 0.95); 
+    box-shadow: 0 0 15px rgba(0,0,0,0.2); 
+    border-radius: 5px; 
+    border-left: 4px solid #11998e; 
+    min-width: 160px; 
+}
 .info-stats h6 { margin: 0 0 5px; color: #333; font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 3px; }
 .info-stats span { display: block; margin-bottom: 3px; color: #555; }
-.zoom-msg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 350px; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+
+.zoom-msg-overlay { 
+    position: absolute; top: 0; left: 0; width: 100%; height: 350px; 
+    background-color: rgba(0, 0, 0, 0.6); 
+    display: flex; justify-content: center; align-items: center; 
+    z-index: 1000; opacity: 0; pointer-events: none; 
+    transition: opacity 0.3s ease; 
+}
 .zoom-msg-overlay.visible { opacity: 1; }
 .zoom-msg-overlay p { color: white; font-size: 1.2rem; font-weight: 500; }
+
 kbd { background-color: #eee; border-radius: 3px; border: 1px solid #b4b4b4; padding: 2px 4px; color: #333; }
 
-/* Estilos de la Barra de Dibujo */
-.leaflet-draw-toolbar {
-    box-shadow: 0 1px 5px rgba(0,0,0,0.4); background: #fff; border-radius: 5px; overflow: hidden;
-}
-.leaflet-draw-toolbar a {
-    background-color: #fff; border-bottom: 1px solid #ccc; color: #444; display: block; height: 30px; width: 30px; line-height: 30px; text-align: center; text-decoration: none; font-size: 14px; cursor: pointer;
-}
+/* --- 3. UI LEAFLET --- */
+.leaflet-draw-toolbar { box-shadow: 0 1px 5px rgba(0,0,0,0.4); background: #fff; border-radius: 5px; overflow: hidden; }
+.leaflet-draw-toolbar a { background-color: #fff; border-bottom: 1px solid #ccc; color: #444; display: block; height: 30px; width: 30px; line-height: 30px; text-align: center; text-decoration: none; font-size: 14px; cursor: pointer; }
 .leaflet-draw-toolbar a:hover { background-color: #f4f4f4; }
 .leaflet-draw-toolbar a.drawing-active { background-color: #198754 !important; color: white !important; box-shadow: inset 0 0 5px rgba(0,0,0,0.2); }
-
-/* Tema del Driver.js */
 .driver-popover.driverjs-theme { background-color: #fff; color: #333; }
 .driver-popover-next-btn { background-color: #198754 !important; color: #fff !important; }
+#map:fullscreen { height: 100vh !important; width: 100vw !important; z-index: 99999; }
+#map:-webkit-full-screen { height: 100% !important; width: 100% !important; z-index: 99999; }
+.leaflet-top, .leaflet-bottom { z-index: 1000 !important; }
+
+/* --- 4. SOLUCIÓN RESPONSIVA SEGURA --- */
+
+/* Regla: El select debe respetar el ancho máximo, pero sin trucos raros */
+.form-select {
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* Ajustes Específicos para Móvil */
+@media (max-width: 576px) {
+    .modal-dialog {
+        margin: 0.5rem auto !important;
+        width: 95% !important;
+        max-width: 95% !important;
+    }
+    
+    .modal-body {
+        padding: 1rem !important;
+        overflow-x: hidden; 
+    }
+
+    /* Fuentes optimizadas */
+    .form-select-sm, .form-control-sm, .form-label, .input-group-text { font-size: 0.85rem !important; }
+    
+    /* GMS: Ajuste fino para input groups pequeños */
+    .input-group-sm .input-group-text { padding-left: 0.3rem; padding-right: 0.3rem; }
+    
+    .table-xs { font-size: 0.7rem !important; }
+    .table-xs th, .table-xs td { padding: 4px !important; }
+}
+
+/* Tabla con scroll suave */
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid #dee2e6;
+    margin-bottom: 0;
+}
