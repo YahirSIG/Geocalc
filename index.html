@@ -134,6 +134,43 @@
   </div>
 </div>
 
+<div class="modal fade" id="infoImportModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white py-2">
+        <h6 class="modal-title"><i class="fa-solid fa-circle-info"></i> Formato de Archivos</h6>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p class="small text-muted mb-3">Sube archivos <strong>.CSV</strong> o <strong>.TXT</strong>. El sistema detectará automáticamente las columnas. Ejemplos de estructura:</p>
+
+        <div class="alert alert-light border shadow-sm p-2 mb-2">
+            <strong class="text-success small"><i class="fa-solid fa-check"></i> Opción 1: Decimales</strong>
+            <pre class="bg-dark text-white p-2 rounded mt-1 mb-0" style="font-size: 0.75rem;">Latitud, Longitud
+16.7532, -93.1145
+16.7540, -93.1150</pre>
+        </div>
+
+        <div class="alert alert-light border shadow-sm p-2 mb-2">
+            <strong class="text-success small"><i class="fa-solid fa-check"></i> Opción 2: UTM</strong>
+            <pre class="bg-dark text-white p-2 rounded mt-1 mb-0" style="font-size: 0.75rem;">Este, Norte, Zona
+487500, 1852000, 15
+488100, 1852100, 15</pre>
+        </div>
+
+        <div class="alert alert-light border shadow-sm p-2 mb-0">
+            <strong class="text-success small"><i class="fa-solid fa-check"></i> Opción 3: GMS</strong>
+            <pre class="bg-dark text-white p-2 rounded mt-1 mb-0" style="font-size: 0.75rem;">G_Lat, M_Lat, S_Lat, H_Lat...
+16, 45, 12.5, N, 93, 10, 30.2, W</pre>
+        </div>
+      </div>
+      <div class="modal-footer p-1 bg-light">
+        <button type="button" class="btn btn-sm btn-secondary w-100" data-bs-dismiss="modal">Entendido</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal fade" id="qgisHelpModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -223,14 +260,21 @@
             
             <div class="row g-2 align-items-center" id="tourStepImport">
                 <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="small text-muted fw-bold">Importar Datos:</label>
+                        <button class="btn btn-link btn-sm p-0 text-primary" data-bs-toggle="modal" data-bs-target="#infoImportModal">
+                            <i class="fa-solid fa-circle-info"></i> Ayuda
+                        </button>
+                    </div>
+
                     <div class="d-flex gap-2 flex-wrap">
                         <input type="file" id="fileUpload" accept=".csv, .txt" class="d-none">
                         
                         <button class="btn btn-dark btn-sm flex-grow-1" onclick="document.getElementById('fileUpload').click()">
-                            <i class="fa-solid fa-file-import"></i> Cargar Archivo
+                            <i class="fa-solid fa-file-import"></i> Cargar
                         </button>
                         
-                        <button class="btn btn-outline-secondary btn-sm flex-grow-1" id="btnDownloadTemplate" title="Plantilla Ejemplo">
+                        <button class="btn btn-outline-secondary btn-sm flex-grow-1" id="btnDownloadTemplate" title="Descargar Plantilla">
                             <i class="fa-solid fa-download"></i> Plantilla
                         </button>
                     </div>

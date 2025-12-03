@@ -69,7 +69,7 @@ kbd { background-color: #eee; border-radius: 3px; border: 1px solid #b4b4b4; pad
 
 /* --- 4. SOLUCIÓN RESPONSIVA FINAL --- */
 
-/* Estilo para las etiquetas personalizadas encima de los inputs */
+/* Estilo para las etiquetas de los inputs */
 .form-label-custom {
     font-size: 0.8rem;
     font-weight: 600;
@@ -78,7 +78,7 @@ kbd { background-color: #eee; border-radius: 3px; border: 1px solid #b4b4b4; pad
     display: block;
 }
 
-/* El select siempre ocupa el 100% disponible de su contenedor padre */
+/* El select siempre ocupa el 100% disponible */
 .form-select {
     width: 100% !important;
     text-overflow: ellipsis;
@@ -99,7 +99,6 @@ kbd { background-color: #eee; border-radius: 3px; border: 1px solid #b4b4b4; pad
         overflow-x: hidden; 
     }
 
-    /* Reducir ligeramente fuentes */
     .form-select-sm, .form-control-sm { font-size: 0.85rem !important; }
     
     .table-xs { font-size: 0.7rem !important; }
